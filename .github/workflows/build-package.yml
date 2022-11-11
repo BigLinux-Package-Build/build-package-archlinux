@@ -10,7 +10,7 @@ on:
       - TKG/mesa-git
   
   # Allows you to run this workflow manually from the Actions tab
-  #workflow_dispatch:
+  workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -101,9 +101,9 @@ jobs:
           gitfolder=$(find -type f -name PKGBUILD | sed 's/PKGBUILD//')
           cd $gitfolder
           ls -lh
-          if [ -n "$(echo ${{ github.event.client_payload.branch }} | grep stable )" ];then branch=stable; else branch=testing; fi
+          # if [ -n "$(echo ${{ github.event.client_payload.branch }} | grep stable )" ];then branch=stable; else branch=testing; fi
           for i in *.zst *.sig *.md5; do
-          test -e $i && rsync -vapz -e "ssh -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }}:${{ secrets.PKGBUILD_DIR }}/$branch
+          test -e $i && rsync -vapz -e "ssh -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }}:${{ secrets.PKGBUILD_ARCHLINUX_DIR }}
           sleep 10
           done
           exit 0
@@ -113,15 +113,24 @@ jobs:
         #run: |
           #curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID }}", "text": "Pacote: ${{ github.event.action }} criado e enviado a partir do branch ${{ github.ref_name }}", "disable_notification": true}' ${{ secrets.MESSAGE_BOT_KEY }}
           
-      - name: Telegram Alert Fail
-        if: ${{ failure() || cancelled() }}
-        run: |
-          curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID }}", "text": "FALHA ao criar Pacote: ${{ github.event.action }} a partir do branch ${{ github.ref_name }}, link do erro: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}", "disable_notification": false}' ${{ secrets.MESSAGE_BOT_KEY }}
+      # - name: Telegram Alert Fail
+      #   if: ${{ failure() || cancelled() }}
+      #   run: |
+      #     curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID }}", "text": "FALHA ao criar Pacote: ${{ github.event.action }} a partir do branch ${{ github.ref_name }}, link do erro: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}", "disable_notification": false}' ${{ secrets.MESSAGE_BOT_KEY }}
           
         ## Tmate ##
       #- name: Setup tmate session
       #  uses: mxschmitt/action-tmate@v3 
           
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
 #      - name: upload-cdn77
 #        shell: bash -O extglob {0}
