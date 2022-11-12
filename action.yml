@@ -208,7 +208,7 @@ runs:
         Server = https://codingflyboy.mm.fcix.net/archlinux/$repo/os/$arch
         Server = https://mirrors.lug.mtu.edu/archlinux/$repo/os/$arch
         Server = http://repo.miserver.it.umich.edu/archlinux/$repo/os/$arch
-        Server = https://mirrors.sonic.net/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
+        Server = https://mirrors.sonic.net/archlinux/$repo/os/$arch' | sudo tee -a /etc/pacman.d/mirrorlist
         
         #add biglinux archlinux repository
         echo '
@@ -269,19 +269,13 @@ runs:
         popd
         sudo rm -rf manjaro-chrootbuild
         
-        #add biglinux repository
-        sudo sed -i '/\[core\]/{h;s/.*/\[biglinux-update-stable\]/;p;x;}' /etc/chrootbuild/pacman.conf.x86_64
-        sudo sed -i '/\[core\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' /etc/chrootbuild/pacman.conf.x86_64
-        sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/update-stable\/$arch/;p;x;}' /etc/chrootbuild/pacman.conf.x86_64
-        sudo sed -i '/\[core\]/{h;s/.*//;p;x;}' /etc/chrootbuild/pacman.conf.x86_64
-        echo '
-        [biglinux-testing]
-        SigLevel = PackageRequired
-        Server = https://repo.biglinux.com.br/testing/$arch' | sudo tee -a /etc/chrootbuild/pacman.conf.x86_64
-        echo '
-        [biglinux-stable]
-        SigLevel = PackageRequired
-        Server = https://repo.biglinux.com.br/stable/$arch' | sudo tee -a /etc/chrootbuild/pacman.conf.x86_64
+        sudo cp /etc/pacman.conf /etc/chrootbuild/pacman.conf.x86_64
+        
+        # #add biglinux repository
+        # echo '
+        # [biglinux-archlinux]
+        # SigLevel = PackageRequired
+        # Server = https://repo.biglinux.com.br/archlinux/$arch' | sudo tee -a /etc/chrootbuild/pacman.conf.x86_64
         
         sudo sed -i '/-Syy/s/-Syy/-Syy git /' /usr/lib/manjaro-chrootbuild/util-chroot.sh
         
