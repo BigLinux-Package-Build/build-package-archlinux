@@ -81,8 +81,8 @@ runs:
         sudo meson compile -C build
         sudo meson install -C build
         popd
-        sudo install -m644 pacman.conf /etc/pacman.conf
-        sudo install -m644 makepkg.conf /etc/
+        # sudo install -m644 pacman.conf /etc/pacman.conf
+        # sudo install -m644 makepkg.conf /etc/
         sudo mkdir -p /etc/pacman.d
         sudo touch /etc/pacman.d/mirrorlist
         popd
