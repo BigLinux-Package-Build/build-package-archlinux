@@ -85,7 +85,7 @@ runs:
         # sudo install -m644 makepkg.conf /etc/
         sudo mkdir -p /etc/pacman.d
         sudo touch /etc/pacman.d/mirrorlist
-        popd
+        # popd
         sudo rm -rf pacman-${PACMAN_VERSION}*
         
         #add biglinux archlinux repository
