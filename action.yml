@@ -247,7 +247,7 @@ runs:
         #sudo pacman-key --init
         #sudo pacman-key -r 45EC44879815E2A6
         #sudo pacman-key --lsign-key 45EC44879815E2A6
-        #sudo pacman-key --populate archlinux manjaro biglinux
+        #sudo pacman-key --populate archlinux biglinux
         
     - name: pull keys
       shell: bash
@@ -269,13 +269,13 @@ runs:
         popd
         sudo rm -rf manjaro-chrootbuild
         
-        sudo cp /etc/pacman.conf /etc/chrootbuild/pacman.conf.x86_64
-        
         # #add biglinux repository
         # echo '
         # [biglinux-archlinux]
         # SigLevel = PackageRequired
         # Server = https://repo.biglinux.com.br/archlinux/$arch' | sudo tee -a /etc/chrootbuild/pacman.conf.x86_64
+        
+        sudo cp /etc/pacman.conf /etc/chrootbuild/pacman.conf.x86_64
         
         sudo sed -i '/-Syy/s/-Syy/-Syy git /' /usr/lib/manjaro-chrootbuild/util-chroot.sh
         
