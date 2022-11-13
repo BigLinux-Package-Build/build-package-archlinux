@@ -65,12 +65,9 @@ runs:
       env:
         PACMAN_VERSION: 6.0.1
       run: |
-        # sudo git clone --depth 1 https://gitlab.manjaro.org/packages/core/pacman.git
-        # pushd pacman
         sudo wget https://sources.archlinux.org/other/pacman/pacman-${PACMAN_VERSION}.tar.xz
         sudo tar -xvf pacman-${PACMAN_VERSION}.tar.xz
         pushd pacman-${PACMAN_VERSION}
-        # sudo patch -p1 -i ../pacman-sync-first-option.patch
         sudo meson --prefix=/usr \
                     --buildtype=plain \
                     -Ddoc=disabled \
@@ -81,12 +78,10 @@ runs:
         sudo meson compile -C build
         sudo meson install -C build
         popd
-        # sudo install -m644 pacman.conf /etc/pacman.conf
-        # sudo install -m644 makepkg.conf /etc/
+        sudo rm -rf pacman-${PACMAN_VERSION}*
+        
         sudo mkdir -p /etc/pacman.d
         sudo touch /etc/pacman.d/mirrorlist
-        # popd
-        sudo rm -rf pacman-${PACMAN_VERSION}*
         
         #add arch repository
         echo '
@@ -215,18 +210,16 @@ runs:
         [biglinux-archlinux]
         SigLevel = PackageRequired
         Server = https://repo.biglinux.com.br/archlinux/$arch' | sudo tee -a /etc/pacman.conf
-    
+        
+        sudo sed -i '/PACKAGER=/s/#PACKAGER=.*/\PACKAGER="BigLinux Package Build <bigbruno@gmail.com>\"/' /etc/makepkg.conf
+        sudo sed -i "/PKGEXT=/s/PKGEXT=.*/PKGEXT='.pkg.tar.zst'/"  /etc/makepkg.conf
+        sudo sed -i "/SRCEXT=/s/SRCEXT=.*/SRCEXT='.src.tar.zst'/"  /etc/makepkg.conf
+        
     - name: install keyrings
       shell: bash
       run: |
         sudo install -dm755 /usr/share/pacman/keyrings/
-        # sudo git clone --depth 1 https://gitlab.manjaro.org/packages/core/manjaro-keyring.git
-        # pushd manjaro-keyring
-          # sudo install -m0644 manjaro.gpg /usr/share/pacman/keyrings/
-          # sudo install -m0644 manjaro-trusted /usr/share/pacman/keyrings/
-          # sudo install -m0644 manjaro-trusted /usr/share/pacman/keyrings/
-        # popd
-        # sudo rm -rf manjaro-keyring
+        
         mkdir -p archlinux-keyring
         pushd archlinux-keyring
           wget https://archlinux.org/packages/core/any/archlinux-keyring/download -O /tmp/archlinux-keyring.tar.zst
@@ -236,6 +229,7 @@ runs:
           sudo install -m0644 archlinux-revoked /usr/share/pacman/keyrings/
         popd
         sudo rm -rf archlinux-keyring
+        
         sudo git clone --depth 1 https://github.com/biglinux/biglinux-keyring.git
         pushd biglinux-keyring
           sudo install -m0644 biglinux.gpg /usr/share/pacman/keyrings/
@@ -257,32 +251,37 @@ runs:
         sudo cp -r biglinux-key/usr/share/pacman/keyrings/* /etc/pacman.d/gnupg/
         sudo rm -r biglinux-key
         
-    - name: install manjaro-chrootbuild
-      shell: bash
-      env:
-        EXTRAREPO: ${{ inputs.extrarepo }}
-      run: |
-        sudo git clone --depth 1 https://gitlab.manjaro.org/tools/development-tools/manjaro-chrootbuild
-        pushd manjaro-chrootbuild
-        sudo ./install.sh
-        echo 'PACKAGER="BigLinux Package Build <bigbruno@gmail.com>"' | sudo tee -a /etc/makepkg.conf > /dev/null
-        popd
-        sudo rm -rf manjaro-chrootbuild
-        
-        # #add biglinux repository
-        # echo '
-        # [biglinux-archlinux]
-        # SigLevel = PackageRequired
-        # Server = https://repo.biglinux.com.br/archlinux/$arch' | sudo tee -a /etc/chrootbuild/pacman.conf.x86_64
-        
-        sudo cp /etc/pacman.conf /etc/chrootbuild/pacman.conf.x86_64
-        
-        sudo sed -i '/-Syy/s/-Syy/-Syy git /' /usr/lib/manjaro-chrootbuild/util-chroot.sh
+#     - name: install manjaro-chrootbuild
+#       shell: bash
+#       env:
+#         EXTRAREPO: ${{ inputs.extrarepo }}
+#       run: |
+#         sudo git clone --depth 1 https://gitlab.manjaro.org/tools/development-tools/manjaro-chrootbuild
+#         pushd manjaro-chrootbuild
+#         sudo ./install.sh
+#         echo 'PACKAGER="BigLinux Package Build <bigbruno@gmail.com>"' | sudo tee -a /etc/makepkg.conf > /dev/null
+#         popd
+#         sudo rm -rf manjaro-chrootbuild
+#         
+#         #add biglinux repository
+#         echo '
+#         [biglinux-archlinux]
+#         SigLevel = PackageRequired
+#         Server = https://repo.biglinux.com.br/archlinux/$arch' | sudo tee -a /etc/chrootbuild/pacman.conf.x86_64
+#         
+#         sudo cp /etc/pacman.conf /etc/chrootbuild/pacman.conf.x86_64
+#         
+#         sudo sed -i '/-Syy/s/-Syy/-Syy git /' /usr/lib/manjaro-chrootbuild/util-chroot.sh
         
     # Tmate ##
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
     
+    - name: update repo
+      shell: bash
+      run: |
+        #update repo
+        sudo pacman -Sy
         
     - name: build package
       shell: bash
@@ -292,22 +291,21 @@ runs:
         gitfolder=$(find -type f -name PKGBUILD | sed 's/PKGBUILD//')
         cd $gitfolder
         
-        #for i in $(find -type f -name PKGBUILD | sed 's/PKGBUILD//'); do
-        #cd $i
-        if [ -n "$(echo ${{ github.event.client_payload.url }} | grep https://github.com/biglinux/)" ]; then
-        git checkout ${{ inputs.gitbranch }}
-        sed -i 's/\.git"/\.git#branch=${{ inputs.gitbranch }}"/' PKGBUILD
-        fi
+        makepkg -s
         
-        ${{ github.event.client_payload.command }}
+#         if [ -n "$(echo ${{ github.event.client_payload.url }} | grep https://github.com/biglinux/)" ]; then
+#         git checkout ${{ inputs.gitbranch }}
+#         sed -i 's/\.git"/\.git#branch=${{ inputs.gitbranch }}"/' PKGBUILD
+#         fi
+#         
+#         ${{ github.event.client_payload.command }}
+#         
+#         build_opt=("-H" "-p ." "-b ${{ inputs.branch }}")
+#         [[ ! -z "${{ inputs.custom-repo }}" ]] && build_opt+=("-k ${{ inputs.custom-repo }}")
+#         [[ "${{ inputs.multilib }}" == "true" ]] && build_opt+=("-m")
+#         echo "cmd=chrootbuild ${build_opt[@]}"
+#         sudo chrootbuild ${build_opt[@]}
         
-        build_opt=("-H" "-p ." "-b ${{ inputs.branch }}")
-        [[ ! -z "${{ inputs.custom-repo }}" ]] && build_opt+=("-k ${{ inputs.custom-repo }}")
-        [[ "${{ inputs.multilib }}" == "true" ]] && build_opt+=("-m")
-        echo "cmd=chrootbuild ${build_opt[@]}"
-        sudo chrootbuild ${build_opt[@]}
-        
-        #done
         
     - name: Rename Package
       shell: bash -O extglob {0}
