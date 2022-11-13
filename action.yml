@@ -251,37 +251,37 @@ runs:
         sudo cp -r biglinux-key/usr/share/pacman/keyrings/* /etc/pacman.d/gnupg/
         sudo rm -r biglinux-key
         
-#     - name: install manjaro-chrootbuild
-#       shell: bash
-#       env:
-#         EXTRAREPO: ${{ inputs.extrarepo }}
-#       run: |
-#         sudo git clone --depth 1 https://gitlab.manjaro.org/tools/development-tools/manjaro-chrootbuild
-#         pushd manjaro-chrootbuild
-#         sudo ./install.sh
-#         echo 'PACKAGER="BigLinux Package Build <bigbruno@gmail.com>"' | sudo tee -a /etc/makepkg.conf > /dev/null
-#         popd
-#         sudo rm -rf manjaro-chrootbuild
-#         
-#         #add biglinux repository
-#         echo '
-#         [biglinux-archlinux]
-#         SigLevel = PackageRequired
-#         Server = https://repo.biglinux.com.br/archlinux/$arch' | sudo tee -a /etc/chrootbuild/pacman.conf.x86_64
-#         
-#         sudo cp /etc/pacman.conf /etc/chrootbuild/pacman.conf.x86_64
-#         
-#         sudo sed -i '/-Syy/s/-Syy/-Syy git /' /usr/lib/manjaro-chrootbuild/util-chroot.sh
+    - name: install manjaro-chrootbuild
+      shell: bash
+      env:
+        EXTRAREPO: ${{ inputs.extrarepo }}
+      run: |
+        sudo git clone --depth 1 https://gitlab.manjaro.org/tools/development-tools/manjaro-chrootbuild
+        pushd manjaro-chrootbuild
+        sudo ./install.sh
+        echo 'PACKAGER="BigLinux Package Build <bigbruno@gmail.com>"' | sudo tee -a /etc/makepkg.conf > /dev/null
+        popd
+        sudo rm -rf manjaro-chrootbuild
+        
+        #add biglinux repository
+        echo '
+        [biglinux-archlinux]
+        SigLevel = PackageRequired
+        Server = https://repo.biglinux.com.br/archlinux/$arch' | sudo tee -a /etc/chrootbuild/pacman.conf.x86_64
+        
+        sudo cp /etc/pacman.conf /etc/chrootbuild/pacman.conf.x86_64
+        
+        sudo sed -i '/-Syy/s/-Syy/-Syy git /' /usr/lib/manjaro-chrootbuild/util-chroot.sh
         
     # Tmate ##
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
     
-    - name: update repo
-      shell: bash
-      run: |
-        #update repo
-        sudo pacman -Sy
+    # - name: update repo
+    #   shell: bash
+    #   run: |
+    #     #update repo
+    #     sudo pacman -Sy
         
     - name: build package
       shell: bash
@@ -291,7 +291,7 @@ runs:
         gitfolder=$(find -type f -name PKGBUILD | sed 's/PKGBUILD//')
         cd $gitfolder
         
-        makepkg -s
+        # makepkg -s --noconfirm
         
 #         if [ -n "$(echo ${{ github.event.client_payload.url }} | grep https://github.com/biglinux/)" ]; then
 #         git checkout ${{ inputs.gitbranch }}
