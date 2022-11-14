@@ -31,29 +31,29 @@ jobs:
           echo '
           [biglinux-archlinux]
           SigLevel = PackageRequired
-          Server = https://repo.biglinux.com.br/archlinux/$arch' | sudo tee -a /etc/pacman.conf
+          Server = https://repo.biglinux.com.br/archlinux/$arch' | tee -a /etc/pacman.conf
           
           echo '
           [biglinux-stable]
           SigLevel = PackageRequired
-          Server = https://repo.biglinux.com.br/stable/$arch' | sudo tee -a /etc/pacman.conf
+          Server = https://repo.biglinux.com.br/stable/$arch' | tee -a /etc/pacman.conf
           
-          sudo sed -i '/PACKAGER=/s/#PACKAGER=.*/\PACKAGER="BigLinux Package Build <bigbruno@gmail.com>\"/' /etc/makepkg.conf
+          sed -i '/PACKAGER=/s/#PACKAGER=.*/\PACKAGER="BigLinux Package Build <bigbruno@gmail.com>\"/' /etc/makepkg.conf
           
           
           #add biglinux Keyring
-          sudo git clone --depth 1 https://github.com/biglinux/biglinux-keyring.git
+          git clone --depth 1 https://github.com/biglinux/biglinux-keyring.git
           pushd biglinux-keyring
-            sudo install -m0644 biglinux.gpg /usr/share/pacman/keyrings/
-            sudo install -m0644 biglinux-trusted /usr/share/pacman/keyrings/
-            sudo install -m0644 biglinux-trusted /usr/share/pacman/keyrings/
+            install -m0644 biglinux.gpg /usr/share/pacman/keyrings/
+            install -m0644 biglinux-trusted /usr/share/pacman/keyrings/
+            install -m0644 biglinux-trusted /usr/share/pacman/keyrings/
           popd
-          sudo rm -rf biglinux-keyring
+          rm -rf biglinux-keyring
           
-          sudo git clone https://github.com/biglinux/biglinux-key.git
-          sudo mkdir -p /etc/pacman.d/gnupg/
-          sudo cp -r biglinux-key/usr/share/pacman/keyrings/* /etc/pacman.d/gnupg/
-          sudo rm -r biglinux-key
+          git clone https://github.com/biglinux/biglinux-key.git
+          mkdir -p /etc/pacman.d/gnupg/
+          cp -r biglinux-key/usr/share/pacman/keyrings/* /etc/pacman.d/gnupg/
+          rm -r biglinux-key
         
       - name: Install Dependencies
         shell: bash
