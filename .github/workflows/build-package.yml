@@ -56,11 +56,12 @@ jobs:
           popd
           rm -rf biglinux-keyring
           
-          git clone https://github.com/biglinux/biglinux-key.git
-          mkdir -p /etc/pacman.d/gnupg/
-          cp -r biglinux-key/usr/share/pacman/keyrings/* /etc/pacman.d/gnupg/
-          rm -r biglinux-key
+          # git clone https://github.com/biglinux/biglinux-key.git
+          # mkdir -p /etc/pacman.d/gnupg/
+          # cp -r biglinux-key/usr/share/pacman/keyrings/* /etc/pacman.d/gnupg/
+          # rm -r biglinux-key
         
+          pacman -Sy
       - name: Makepkg Build    
         shell: bash
         run: |
