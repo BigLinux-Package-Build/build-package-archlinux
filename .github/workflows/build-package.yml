@@ -81,6 +81,7 @@ jobs:
         shell: bash -O extglob {0}
         run: | 
           # "Rename Package"
+          ls -lh
           gitfolder=$(find -type f -name PKGBUILD | sed 's/PKGBUILD//')
           cd $gitfolder
           for i in *.zst; do if [ -n "$(ls $i | grep :)" ]; then mv $i $(echo $i | sed 's/:/-/'); fi; done
@@ -90,6 +91,7 @@ jobs:
         shell: bash -O extglob {0}
         run: |
           # "Assinar Pacote"
+          ls -lh
           cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --batch --import &>/dev/null
           gitfolder=$(find -type f -name PKGBUILD | sed 's/PKGBUILD//')
           cd $gitfolder
@@ -101,6 +103,7 @@ jobs:
         shell: bash -O extglob {0}
         run: |
           # "Checksum"
+          ls -lh
           gitfolder=$(find -type f -name PKGBUILD | sed 's/PKGBUILD//')
           cd $gitfolder
           echo '#!/bin/bash
@@ -112,6 +115,7 @@ jobs:
       - name: Publish Package on GitHub
         shell: bash
         run: |
+          ls -lh
           gitfolder=$(find -type f -name PKGBUILD | sed 's/PKGBUILD//')
           cd $gitfolder
           ls -lh
@@ -159,10 +163,10 @@ jobs:
         #run: |
           #curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID_ARCHLINUX }}", "text": "Pacote: ${{ github.event.action }} criado e enviado a partir do branch ${{ github.ref_name }}", "disable_notification": true}' ${{ secrets.MESSAGE_BOT_KEY }}
           
-      - name: Telegram Alert Fail
-        if: ${{ failure() || cancelled() }}
-        run: |
-          curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID_ARCHLINUX }}", "text": "FALHA ao criar Pacote: ${{ github.event.action }} a partir do repo archinux, link do erro: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}", "disable_notification": false}' ${{ secrets.MESSAGE_BOT_KEY }}
+      # - name: Telegram Alert Fail
+      #   if: ${{ failure() || cancelled() }}
+      #   run: |
+      #     curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID_ARCHLINUX }}", "text": "FALHA ao criar Pacote: ${{ github.event.action }} a partir do repo archinux, link do erro: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}", "disable_notification": false}' ${{ secrets.MESSAGE_BOT_KEY }}
           
         ## Tmate ##
       #- name: Setup tmate session
