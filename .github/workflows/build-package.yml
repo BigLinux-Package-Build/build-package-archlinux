@@ -56,12 +56,11 @@ jobs:
           popd
           rm -rf biglinux-keyring
           
-          # git clone https://github.com/biglinux/biglinux-key.git
-          # mkdir -p /etc/pacman.d/gnupg/
-          # cp -r biglinux-key/usr/share/pacman/keyrings/* /etc/pacman.d/gnupg/
-          # rm -r biglinux-key
+          #pacman-key --init
+          #pacman-key --populate archlinux manjaro biglinux
         
           pacman -Sy
+          
       - name: Makepkg Build    
         shell: bash
         run: |
@@ -110,11 +109,6 @@ jobs:
           exit 0' > md5.sh
           bash md5.sh
             
-            
-  Push:
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:
       - name: Publish Package on GitHub
         shell: bash
         run: |
