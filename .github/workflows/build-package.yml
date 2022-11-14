@@ -24,6 +24,12 @@ jobs:
           echo "branch: ${{ github.event.client_payload.branch }}"
           echo "extrarepo: ${{ github.event.client_payload.extrarepo }}"
           
+      - name: Install Dependencies
+        shell: bash
+        run: |
+          echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf
+          pacman -Syu --noconfirm sudo git github-cli openssh gnupg coreutils rsync wget fakeroot binutils
+          
       - name: Add BigLinux Repo and Key
         shell: bash
         run: |
@@ -55,12 +61,6 @@ jobs:
           cp -r biglinux-key/usr/share/pacman/keyrings/* /etc/pacman.d/gnupg/
           rm -r biglinux-key
         
-      - name: Install Dependencies
-        shell: bash
-        run: |
-          echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf
-          pacman -Syu --noconfirm sudo git github-cli openssh gnupg coreutils rsync wget fakeroot binutils
-          
       - name: Makepkg Build    
         shell: bash
         run: |
