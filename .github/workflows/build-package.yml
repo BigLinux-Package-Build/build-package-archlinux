@@ -85,6 +85,7 @@ jobs:
           ls -lh
           echo $gitfolder
           cd $gitfolder
+          ls -lh
           for i in *.zst; do if [ -n "$(ls $i | grep :)" ]; then mv $i $(echo $i | sed 's/:/-/'); fi; done
 
           
