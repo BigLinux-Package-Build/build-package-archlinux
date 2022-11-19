@@ -28,7 +28,7 @@ jobs:
         shell: bash
         run: |
           echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf
-          pacman -Syu --noconfirm sudo git github-cli openssh gnupg coreutils rsync wget fakeroot binutils cmake extra-cmake-modules gcc make
+          pacman -Syu --noconfirm sudo git github-cli openssh gnupg coreutils rsync wget fakeroot binutils cmake extra-cmake-modules gcc make devtools
           
       - name: Add BigLinux Repo and Key
         shell: bash
