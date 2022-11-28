@@ -76,9 +76,7 @@ jobs:
           chmod 777 $gitfolder
           cd $gitfolder
           
-          gpg --recv-key 12C6F735F7A9A519
-          
-          sudo -u builduser bash -c 'makepkg -sc --noconfirm'
+          sudo -u builduser bash -c 'makepkg -sc --noconfirm --skippgpcheck'
           
           ls -lh
           
