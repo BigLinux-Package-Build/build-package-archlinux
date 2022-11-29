@@ -56,8 +56,8 @@ jobs:
           popd
           rm -rf biglinux-keyring
           
-          #pacman-key --init
-          #pacman-key --populate archlinux manjaro biglinux
+          pacman-key --init
+          pacman-key --populate archlinux biglinux
         
           pacman -Sy
           
