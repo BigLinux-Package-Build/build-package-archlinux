@@ -31,7 +31,6 @@ jobs:
           pacman -Syu --noconfirm pacman sudo git github-cli openssh gnupg coreutils rsync wget fakeroot binutils cmake extra-cmake-modules gcc make devtools \
           acl \
           archlinux-keyring \
-          argon2 \
           attr \
           audit \
           autoconf \
@@ -72,7 +71,6 @@ jobs:
           glib2 \
           glibc \
           gmp \
-          gnupg \
           gnutls \
           gpgme \
           grep \
@@ -150,7 +148,6 @@ jobs:
           openssh \
           openssl \
           p11-kit \
-          pacman \
           pacman-mirrorlist \
           pam \
           pambase \
@@ -182,7 +179,6 @@ jobs:
           util-linux-libs \
           which \
           xz \
-          yay-bin \
           zlib \
           zram-generator \
           zstd
