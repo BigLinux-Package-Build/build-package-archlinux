@@ -104,6 +104,7 @@ jobs:
           perl-mailtools \
           perl-timedate \
           pinentry \
+          pipewire-jack \
           pkgconf \
           popt \
           procps-ng \
