@@ -8,6 +8,7 @@ on:
       - AUR/*
       # - xivastudio/*
       # - TKG/mesa-git
+      - BigLinuxAur/*
   
   workflow_dispatch:
 
@@ -31,87 +32,31 @@ jobs:
           pacman -Syu --noconfirm pacman sudo git github-cli openssh gnupg coreutils rsync wget fakeroot binutils cmake extra-cmake-modules gcc make devtools \
           acl \
           archlinux-keyring \
-          attr \
-          audit \
           autoconf \
           automake \
-          base \
-          bash \
           binutils \
           bison \
-          brotli \
           btrfs-progs \
-          bzip2 \
-          ca-certificates \
-          ca-certificates-mozilla \
-          ca-certificates-utils \
-          coreutils \
           cryptsetup \
-          curl \
           db \
-          dbus \
           debugedit \
-          device-mapper \
           diffutils \
           dnssec-anchors \
-          e2fsprogs \
-          expat \
           fakeroot \
-          file \
-          filesystem \
-          findutils \
           flex \
-          gawk \
           gc \
-          gcc \
           gcc-libs \
-          gdbm \
-          gettext \
           git \
           glib2 \
-          glibc \
-          gmp \
-          gnutls \
-          gpgme \
-          grep \
           groff \
           grub \
           guile \
-          gzip \
-          hwdata \
-          iana-etc \
-          icu \
-          iproute2 \
-          iptables \
           iputils \
           jansson \
-          json-c \
-          kbd \
-          keyutils \
-          kmod \
-          krb5 \
           ldns \
-          less \
-          libarchive \
-          libassuan \
-          libbpf \
-          libcap \
-          libcap-ng \
           libedit \
-          libelf \
-          libevent \
-          libffi \
-          libgcrypt \
-          libgpg-error \
-          libidn2 \
           libisl \
-          libksba \
-          libldap \
-          libmnl \
           libmpc \
-          libnetfilter_conntrack \
-          libnfnetlink \
-          libnftnl \
           libnghttp2 \
           libnl \
           libp11-kit \
@@ -192,14 +137,20 @@ jobs:
           [biglinux-archlinux]
           SigLevel = PackageRequired
           Server = https://repo.biglinux.com.br/archlinux/$arch' | tee -a /etc/pacman.conf
-          
-          echo '
-          [biglinux-stable]
-          SigLevel = PackageRequired
-          Server = https://repo.biglinux.com.br/stable/$arch' | tee -a /etc/pacman.conf
+          # echo '
+          # [bigiborg-'"${repo_dev}"']
+          # SigLevel = PackageRequired
+          # Server = https://'"$mirror_unstable"'/$arch' | tee -a /etc/pacman.conf
+          # echo '
+          # [biglinux-testing]
+          # SigLevel = PackageRequired
+          # Server = https://'"$repo_mirror"'.biglinux.com.br/testing/$arch' | tee -a /etc/pacman.conf
+          # echo '
+          # [biglinux-stable]
+          # SigLevel = PackageRequired
+          # Server = https://repo.biglinux.com.br/stable/$arch' | tee -a /etc/pacman.conf
           
           sed -i '/PACKAGER=/s/#PACKAGER=.*/\PACKAGER="BigLinux Package Build <bigbruno@gmail.com>\"/' /etc/makepkg.conf
-          
           
           #add biglinux Keyring
           git clone --depth 1 https://github.com/biglinux/biglinux-keyring.git
@@ -215,11 +166,11 @@ jobs:
         
           pacman -Sy
           
-      - name: Makepkg Build    
+      - name: Makepkg Build
         shell: bash
         run: |
-          useradd builduser -m 
-          passwd -d builduser 
+          useradd builduser -m
+          passwd -d builduser
           printf 'builduser ALL=(ALL) ALL\n' | tee -a /etc/sudoers
           
           #if [ -n "$(echo ${{ github.event.client_payload.url }} | grep pamac)" ]; then
@@ -236,12 +187,11 @@ jobs:
           
       - name: Rename Package
         shell: bash -O extglob {0}
-        run: | 
+        run: |
           # "Rename Package"
           gitfolder=$(find -type f -name PKGBUILD | sed 's/PKGBUILD//')
           cd $gitfolder
           for i in *.zst; do if [ -n "$(ls $i | grep :)" ]; then mv $i $(echo $i | sed 's/:/-/'); fi; done
-
           
       - name: sign package
         shell: bash -O extglob {0}
@@ -304,7 +254,6 @@ jobs:
           ssh-keyscan -t rsa -p ${{ secrets.PKGBUILD_PORT }} ${{ secrets.PKGBUILD_HOST }} >> /home/runner/.ssh/known_hosts
           
           ls -lh
-          branch=testing
           for i in *.zst *.sig *.md5; do
           test -e $i && rsync -vapz -e "ssh -o StrictHostKeyChecking=no -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }}:${{ secrets.PKGBUILD_ARCHLINUX_DIR }}
           sleep 10
