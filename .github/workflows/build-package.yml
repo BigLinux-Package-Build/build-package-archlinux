@@ -39,6 +39,7 @@ jobs:
           archlinux-keyring \
           autoconf \
           automake \
+          base-devel \
           binutils \
           bison \
           btrfs-progs \
