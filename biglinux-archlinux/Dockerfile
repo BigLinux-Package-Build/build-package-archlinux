@@ -1,6 +1,6 @@
 FROM archlinux:latest
 
-ENV arch=x86_64
+ENV EXPORT arch=x86_64
 
 RUN echo -e '\n[multilib]\nInclude = /etc/pacman.d/mirrorlist' > /etc/pacman.conf \
   && pacman -Sy git --needed --noconfirm \
@@ -53,6 +53,8 @@ RUN echo -e '\n[multilib]\nInclude = /etc/pacman.d/mirrorlist' > /etc/pacman.con
     zip \
     mesa \
     vulkan-intel \
-    vulkan-radeon
+    vulkan-radeon \
+  && rm -rf /var/cache/pacman/pkg/* \
+  && rm -rf /var/lib/pacman/sync/*
 
 CMD ["/usr/bin/bash"]
