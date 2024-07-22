@@ -237,6 +237,7 @@ jobs:
         shell: bash -O extglob {0}
         run: |
           # "Rename Package"
+          cd /home/builduser
           gitfolder=$(find -type f -name PKGBUILD | sed 's/PKGBUILD//')
           cd $gitfolder
           for i in *.zst; do if [ -n "$(ls $i | grep :)" ]; then mv $i $(echo $i | sed 's/:/-/'); fi; done
@@ -245,6 +246,7 @@ jobs:
         shell: bash -O extglob {0}
         run: |
           # "Assinar Pacote"
+          cd /home/builduser
           cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --batch --import &>/dev/null
           gitfolder=$(find -type f -name PKGBUILD | sed 's/PKGBUILD//')
           cd $gitfolder
@@ -256,6 +258,7 @@ jobs:
         shell: bash -O extglob {0}
         run: |
           # "Checksum"
+          cd /home/builduser
           gitfolder=$(find -type f -name PKGBUILD | sed 's/PKGBUILD//')
           cd $gitfolder
           echo '#!/bin/bash
@@ -267,6 +270,7 @@ jobs:
       - name: Publish Package on GitHub
         shell: bash
         run: |
+          cd /home/builduser
           gitfolder=$(find -type f -name PKGBUILD | sed 's/PKGBUILD//')
           cd $gitfolder
           ls -lh
@@ -287,6 +291,7 @@ jobs:
       - name: Push to Repo
         shell: bash
         run: |
+          cd /home/builduser
           gitfolder=$(find -type f -name PKGBUILD | sed 's/PKGBUILD//')
           cd $gitfolder
           ls -lh
