@@ -25,6 +25,7 @@ RUN echo -e '\n[multilib]\nInclude = /etc/pacman.d/mirrorlist' >> /etc/pacman.co
     lsof \
     man-db \
     man-pages \
+    mesa \
     mlocate \
     mtr \
     ncurses \
@@ -45,13 +46,13 @@ RUN echo -e '\n[multilib]\nInclude = /etc/pacman.d/mirrorlist' >> /etc/pacman.co
     util-linux \
     util-linux-libs \
     vte-common \
+    vulkan-intel \
+    vulkan-radeon \
     wget \
     words \
     xorg-xauth \
+    yay \
     zip \
-    mesa \
-    vulkan-intel \
-    vulkan-radeon \
   && rm -rf /var/cache/pacman/pkg/* \
   && rm -rf /var/lib/pacman/sync/*
 
