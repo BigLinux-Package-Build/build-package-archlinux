@@ -222,13 +222,11 @@ jobs:
           passwd -d builduser
           printf 'builduser ALL=(ALL) ALL\n' | tee -a /etc/sudoers
           
-          #if [ -n "$(echo ${{ github.event.client_payload.url }} | grep pamac)" ]; then
-            #exit 1
-          #fi
-          git clone ${{ github.event.client_payload.url }}.git
+          cd /home/builduser
+          sudo -u builduser bash -c "git clone ${{ github.event.client_payload.url }}.git"
           gitfolder=$(find -type f -name PKGBUILD | sed 's/PKGBUILD//')
-          chmod 777 $gitfolder
-          chown builduser:builduser -R $gitfolder
+          # chmod 777 $gitfolder
+          # chown builduser:builduser -R $gitfolder
           cd $gitfolder
           
           sudo -u builduser bash -c 'makepkg -sc --noconfirm --skippgpcheck'
