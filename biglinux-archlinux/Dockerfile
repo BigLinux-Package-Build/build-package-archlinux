@@ -1,9 +1,9 @@
 FROM archlinux:latest
 
-ENV EXPORT arch=x86_64
+ENV export arch=x86_64
 
 RUN echo -e '\n[multilib]\nInclude = /etc/pacman.d/mirrorlist' > /etc/pacman.conf \
-  && EXPORT arch=x86_64 \
+  && export arch=x86_64 \
   && pacman -Sy git --needed --noconfirm \
   && echo -e '\n[biglinux-archlinux]\nSigLevel = PackageRequired\nServer = https://repo.biglinux.com.br/archlinux/$arch' > /etc/pacman.conf \
   && git clone --depth 1 https://github.com/biglinux/biglinux-keyring.git \
