@@ -1,5 +1,7 @@
 FROM archlinux:latest
 
+ENV arch=x86_64
+
 RUN echo -e '\n[multilib]\nInclude = /etc/pacman.d/mirrorlist' > /etc/pacman.conf \
   && pacman -Sy git --needed --noconfirm \
   && echo -e '\n[biglinux-archlinux]\nSigLevel = PackageRequired\nServer = https://repo.biglinux.com.br/archlinux/$arch' > /etc/pacman.conf \
