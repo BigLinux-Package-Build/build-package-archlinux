@@ -29,48 +29,6 @@ jobs:
           echo "url: ${{ github.event.client_payload.url }}"
           echo "branch: ${{ github.event.client_payload.branch }}"
           echo "extrarepo: ${{ github.event.client_payload.extrarepo }}"
-
-      - name: Clean System
-        shell: bash -O extglob {0}
-        run: |
-          # Clean System
-          df -h
-          docker image prune --all --force
-          rm -rf \
-          /lixo/opt/google \
-          /lixo/opt/pipx \
-          /lixo/opt/microsoft \
-          /lixo/opt/az \
-          /lixo/opt/hostedtoolcache \
-          /lixo/usr/local/.ghcup \
-          /lixo/usr/share/dotnet \
-          /lixo/usr/share/swift \
-          /lixo/usr/share/dotnet \
-          /lixo/usr/share/miniconda \
-          /lixo/usr/local/lib/android \
-          /lixo/usr/local/lib/node_modules \
-          /lixo/usr/lib/snapd \
-          /lixo/usr/lib/modules \
-          /lixo/usr/lib/python3 \
-          /lixo/usr/lib/firefox \
-          /lixo/usr/lib/heroku \
-          /lixo/usr/lib/mono \
-          /lixo/usr/lib/llvm-13 \
-          /lixo/usr/lib/llvm-14 \
-          /lixo/usr/lib/llvm-15 \
-          /lixo/usr/lib/gcc \
-          /lixo/usr/lib/google-cloud-sdk \
-          /lixo/usr/lib/jvm \
-          /lixo/usr/local/doc \
-          /lixo/usr/local/sqlpackage \
-          /lixo/usr/local/n \
-          /lixo/usr/local/aws-sam-cli \
-          /lixo/usr/local/aws-cli \
-          /lixo/usr/local/julia1.10.3 \
-          /lixo/usr/local/share/vcpkg \
-          /lixo/usr/local/share/chromium \
-          /lixo/usr/local/share/powershell
-          df -h
           
       - name: Install Dependencies
         shell: bash
@@ -88,6 +46,7 @@ jobs:
           db \
           debugedit \
           diffutils \
+          docker \
           dnssec-anchors \
           fakeroot \
           flex \
@@ -176,6 +135,47 @@ jobs:
           zram-generator \
           zstd
 
+      - name: Clean System
+        shell: bash -O extglob {0}
+        run: |
+          # Clean System
+          df -h
+          docker image prune --all --force
+          rm -rf \
+          /lixo/opt/google \
+          /lixo/opt/pipx \
+          /lixo/opt/microsoft \
+          /lixo/opt/az \
+          /lixo/opt/hostedtoolcache \
+          /lixo/usr/local/.ghcup \
+          /lixo/usr/share/dotnet \
+          /lixo/usr/share/swift \
+          /lixo/usr/share/dotnet \
+          /lixo/usr/share/miniconda \
+          /lixo/usr/local/lib/android \
+          /lixo/usr/local/lib/node_modules \
+          /lixo/usr/lib/snapd \
+          /lixo/usr/lib/modules \
+          /lixo/usr/lib/python3 \
+          /lixo/usr/lib/firefox \
+          /lixo/usr/lib/heroku \
+          /lixo/usr/lib/mono \
+          /lixo/usr/lib/llvm-13 \
+          /lixo/usr/lib/llvm-14 \
+          /lixo/usr/lib/llvm-15 \
+          /lixo/usr/lib/gcc \
+          /lixo/usr/lib/google-cloud-sdk \
+          /lixo/usr/lib/jvm \
+          /lixo/usr/local/doc \
+          /lixo/usr/local/sqlpackage \
+          /lixo/usr/local/n \
+          /lixo/usr/local/aws-sam-cli \
+          /lixo/usr/local/aws-cli \
+          /lixo/usr/local/julia1.10.3 \
+          /lixo/usr/local/share/vcpkg \
+          /lixo/usr/local/share/chromium \
+          /lixo/usr/local/share/powershell
+          df -h
           
       - name: Add BigLinux Repo and Key
         shell: bash
